@@ -3,8 +3,11 @@
 import { useState } from "react";
 import MenuLink from "./MenuLink";
 import useLoginModal from "../../hooks/useLoginModal";
+import useSignUpModal from "../../hooks/useSignUpModal";
+
 const UserNav = () => {
     const loginModal = useLoginModal();
+    const signupModal = useSignUpModal();
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="p-2 relative inline-block border rounded-full">
@@ -23,14 +26,16 @@ const UserNav = () => {
                     <MenuLink 
                         label='Log in'
                         onClick={() =>{
-                            console.log('ClickedButton')
                             setIsOpen(false);
                             loginModal.open();
                         }}
                     />
                     <MenuLink 
                         label='Sign up'
-                        onClick={() =>console.log('ClickedButton')}
+                        onClick={() =>{
+                            setIsOpen(false);
+                            signupModal.open();
+                        }}
                     />
                 </div>
             )}
