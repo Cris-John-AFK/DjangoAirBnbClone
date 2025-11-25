@@ -3,24 +3,38 @@
 import { cookies } from 'next/headers';
 
 export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
-    cookies().set('session_userid', userId, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 60 * 60 * 24 * 7, // One week
-        path: '/'
-    });
+    try {
+        const cookieStore = cookies();
+        
+        // Set cookies directly
+        cookieStore.set('session_userid', userId, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+            sameSite: 'lax'
+        });
 
-    cookies().set('session_access_token', accessToken, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 60 * 60, // 60 minutes
-        path: '/'
-    });
+        cookieStore.set('session_access_token', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+            sameSite: 'lax'
+        });
 
-    cookies().set('session_refresh_token', refreshToken, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 60 * 60 * 24 * 7, // One week
-        path: '/'
-    });
+        cookieStore.set('session_refresh_token', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 7,
+            path: '/',
+            sameSite: 'lax'
+        });
+
+        // Return a plain object
+        return { success: true };
+    } catch (error) {
+        console.error('Login error:', error);
+        return { success: false, error: 'Failed to log in' };
+    }
 }
