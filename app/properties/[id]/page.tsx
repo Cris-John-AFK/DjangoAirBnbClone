@@ -1,6 +1,11 @@
 import Image from "next/image";
 import ReservationSidebar from "./ReservationSidebar";
-const PropertyDetailPage = () => {
+import apiService from "@/app/services/apiService";
+
+const PropertyDetailPage = async ({params}:{ params: Promise<{ id:string }> }) => {
+    const resolvedParams = await params;
+    const property = await apiService.get(`/api/properties/${resolvedParams.id}`)
+
     return (
         <main className="max-w-[1500px] mx-auto px-6 pb-6">
             <div className="w-full h-[64vh] mb-4 overflow-hidden rounded-xl relative">
@@ -13,27 +18,31 @@ const PropertyDetailPage = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="py-6 pr-6 col-span-3">
-                    <h1 className="mb-4 text-4xl">Property Name</h1>  
+                    <h1 className="mb-4 text-4xl">{property.title}</h1>  
                     <span className="mb-6 block text-lg text-gray-600">
-                        4 guest - 2 bedrooms - 1 bathroom
+                        {property.guests} guest - {property.bedrooms} bedrooms - {property.bathrooms} bathroom
                     </span>
                     <hr />
                     <div className="py-6 flex items-center space-x-4">
+                        {property.landlord.avatar_url && (
                         <Image
-                            src="/profile_pic_1.jpg"
+                            src={property.landlord.avatar_url}
                             alt="the username"
                             width={50}
                             height={50}
                             className="rounded-full"
                         />
-                        <p><strong>John Doe</strong> is your host</p>
+                    )}
+                        <p><strong>{property.landlord.name}</strong> is your host</p>
                     </div>
                     <hr />
                     <p className="mt-6 text-leg">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+                       {property.description}
                     </p>
                 </div>
-                <ReservationSidebar/>
+                <ReservationSidebar
+                    property={property}
+                />
             </div>
         </main>
     )
