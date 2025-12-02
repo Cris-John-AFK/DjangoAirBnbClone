@@ -66,8 +66,12 @@ const Navbar = () => {
                         <SearchFilters />
                     </div>
                     <div className="flex items-center space-x-6">
-                        <AddPropertyButton />
-                        <UserNav userId={userId} />
+                        <AddPropertyButton 
+                            userId={userId}
+                        />
+                        <UserNav 
+                            userId={userId}
+                        />
                     </div>  
                 </div>
             </div>
