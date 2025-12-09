@@ -1,19 +1,25 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-
 import { resetAuthCookies } from '../lib/actions';
 
 import MenuLink from "./navbar/MenuLink";
 
-const LogoutButton: React.FC = () => {
-    const router = useRouter();
+interface LogoutButtonProps {
+    onClose?: () => void;
+}
 
+const LogoutButton: React.FC<LogoutButtonProps> = ({ onClose }) => {
     const submitLogout = async () => {
+        if (onClose) {
+            onClose();
+        }
+        
         await resetAuthCookies();
         
-        // Force a full page reload to clear all client-side state
-        window.location.href = '/';
+        // Wait a moment for cookies to be cleared, then reload
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 100);
     }
 
     return (

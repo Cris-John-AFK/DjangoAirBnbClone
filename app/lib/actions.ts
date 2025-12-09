@@ -23,9 +23,10 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
 
 export async function resetAuthCookies() {
     const cookieStore = await cookies();
-    cookieStore.set('session_userid', '');
-    cookieStore.set('session_access_token', '');
-    cookieStore.set('session_refresh_token', '');
+    // Delete cookies by setting maxAge to 0
+    cookieStore.set('session_userid', '', { maxAge: 0, path: '/' });
+    cookieStore.set('session_access_token', '', { maxAge: 0, path: '/' });
+    cookieStore.set('session_refresh_token', '', { maxAge: 0, path: '/' });
 }
 
 export async function getUserId() {

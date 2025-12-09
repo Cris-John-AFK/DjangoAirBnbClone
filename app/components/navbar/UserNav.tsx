@@ -49,7 +49,7 @@ const UserNav: React.FC<UserNavProps> = (
                                     router.push(`/myreservations`);
                                 }}
                             />
-                            <LogoutButton />
+                            <LogoutButton onClose={() => setIsOpen(false)} />
                         </>
                     ) : (
                         <>

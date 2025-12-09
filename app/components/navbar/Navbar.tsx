@@ -26,7 +26,8 @@ const Navbar = () => {
         // Check for userId in cookies on client-side
         const checkUserId = () => {
             const id = getCookie('session_userid');
-            setUserId(id);
+            // Treat empty string as null (logged out)
+            setUserId(id && id.trim() ? id : null);
         };
 
         // Check immediately on mount

@@ -7,21 +7,32 @@ const apiService = {
         const token = await getAccessToken();
 
         return new Promise((resolve, reject)=>{
+            const headers: any = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             fetch(`${process.env.NEXT_PUBLIC_API_HOST}${url}`,{
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
-                }
+                headers: headers
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((json) => {
                 console.log('Response:', json);
 
                 resolve(json);
             })
             .catch((error) => {
+                console.error('API Error:', error);
                 reject(error);
             })
         })
@@ -31,9 +42,11 @@ const apiService = {
         const token = await getAccessToken();
 
         return new Promise((resolve, reject)=>{
-            const headers: any = {
-                'Authorization': `Bearer ${token}` 
-            };
+            const headers: any = {};
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
 
             let body: any;
 
@@ -52,13 +65,19 @@ const apiService = {
                 headers: headers,
                 body: body
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((json) => {
                 console.log('Response:', json);
 
                 resolve(json);
             })
             .catch((error) => {
+                console.error('API Error:', error);
                 reject(error);
             })
         })
@@ -75,13 +94,19 @@ const apiService = {
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((json) => {
                 console.log('Response:', json);
 
                 resolve(json);
             })
             .catch((error) => {
+                console.error('API Error:', error);
                 reject(error);
             })
         })
