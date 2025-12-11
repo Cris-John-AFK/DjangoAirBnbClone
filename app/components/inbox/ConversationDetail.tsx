@@ -66,6 +66,7 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
                 }
             });
 
+
         setNewMessage('');
 
         setTimeout(() => {
