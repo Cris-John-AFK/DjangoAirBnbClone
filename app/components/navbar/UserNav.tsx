@@ -12,8 +12,8 @@ interface UserNavProps {
     userId: string | null;
 }
 
-const UserNav: React.FC<UserNavProps> = ( 
-    userId 
+const UserNav: React.FC<UserNavProps> = (
+    { userId }
 ) => {
     const router = useRouter();
     const loginModal = useLoginModal();
@@ -21,7 +21,7 @@ const UserNav: React.FC<UserNavProps> = (
     const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="p-2 relative inline-block border rounded-full">
-            <button 
+            <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center">
                 <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="cursor-pointer w-6 h-6">
@@ -31,38 +31,45 @@ const UserNav: React.FC<UserNavProps> = (
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                 </svg>
             </button>
-            {isOpen &&(
+            {isOpen && (
                 <div className="w-[220px] absolute top-[60px] right-0 bg-white border rounded-xl shadow-md flex flex-col">
                     {userId ? (
                         <>
                             <MenuLink
                                 label='My properties'
-                                onClick={() =>{
+                                onClick={() => {
                                     setIsOpen(false);
                                     router.push(`/myproperties`);
                                 }}
                             />
                             <MenuLink
                                 label='My reservations'
-                                onClick={() =>{
+                                onClick={() => {
                                     setIsOpen(false);
                                     router.push(`/myreservations`);
+                                }}
+                            />
+                            <MenuLink
+                                label='My favorites'
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    router.push(`/myfavorites`);
                                 }}
                             />
                             <LogoutButton onClose={() => setIsOpen(false)} />
                         </>
                     ) : (
                         <>
-                            <MenuLink 
+                            <MenuLink
                                 label='Log in'
-                                onClick={() =>{
+                                onClick={() => {
                                     setIsOpen(false);
                                     loginModal.open();
                                 }}
                             />
-                            <MenuLink 
+                            <MenuLink
                                 label='Sign up'
-                                onClick={() =>{
+                                onClick={() => {
                                     setIsOpen(false);
                                     signupModal.open();
                                 }}
