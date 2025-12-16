@@ -17,13 +17,12 @@ const initialDateRange = {
 const SearchModal = () => {
     let content = (<></>);
     const searchModal = useSearchModal();
-    const [numGuests, setNumGuests] = useState<string>('1');
+    const [numGuests,  setNumGuests] = useState<string>('1');
     const [numBedrooms, setNumBedrooms] = useState<string>('0');
     const [country, setCountry] = useState<SelectCountryValue>();
     const [numBathrooms, setNumBathrooms] = useState<string>('0');
     const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
-    //
     //
 
     const closeAndSearch = () => {
@@ -121,7 +120,7 @@ const SearchModal = () => {
         </>
     )
 
-    const contentDetails = (
+    const contentDetails = ( 
         <>
             <h2 className="mb-6 text-2xl">Details</h2>
 
