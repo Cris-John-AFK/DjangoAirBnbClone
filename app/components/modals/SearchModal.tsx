@@ -26,7 +26,7 @@ const SearchModal = () => {
     //
 
     const closeAndSearch = () => {
-        const newSearchQuery: SearchQuery = {
+        const newSearchQuery: SearchQuery = { 
             country: country?.label,
             checkIn: dateRange.startDate,
             checkOut: dateRange.endDate,

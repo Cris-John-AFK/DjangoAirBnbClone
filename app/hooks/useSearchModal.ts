@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 export type SearchQuery = {
-    country: string | undefined;
+    country: string | undefined; 
     checkIn: Date | undefined;
     checkOut: Date | undefined;
     guests: Number;
