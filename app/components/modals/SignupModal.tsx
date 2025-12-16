@@ -25,10 +25,10 @@ const SignupModal = () => {
         try {
             const response = await apiService.postWithoutToken('/api/auth/register/', formData);
             if(response.access){
-                handleLogin(response.user.pk, response.access, response.refresh);
+                await handleLogin(response.user.pk, response.access, response.refresh);
 
                 signupModal.close();
-                router.push('/')
+                router.refresh();
             } else{
                 const tmpErrors: string[] = Object.values(response).map((error: any)=>{
                     if (Array.isArray(error)) {

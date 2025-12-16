@@ -74,9 +74,22 @@ const AddPropertyModal = () => {
             if (response.success) {
                 console.log('Success');
                 
-                router.push('/'); 
-
                 addPropertyModal.close();
+                
+                // Reset form state
+                setCurrentStep(1);
+                setDataCategory('');
+                setDataTitle('');
+                setDataDescription('');
+                setDataPrice('');
+                setDataBedrooms('');
+                setDataBathrooms('');
+                setDataGuests('');
+                setDataCountry(undefined);
+                setDataImage(null);
+                
+                // Refresh to show new property
+                router.push('/?added=true');
             } else {
                 console.log('Error');
 

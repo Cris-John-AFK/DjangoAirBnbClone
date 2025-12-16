@@ -2,74 +2,124 @@
 
 import { cookies } from 'next/headers';
 
-export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
-    try {
-        const cookieStore = await cookies();
-        const cookieOptions = {
-            httpOnly: false,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 7,
-            path: '/',
-            sameSite: 'lax' as const
-        };
+export async function handleJwtRefresh(accessToken: string, refreshToken: string) {
+    const cookieStore = await cookies();
+    
+    cookieStore.set('session_access_token', accessToken, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60, // 60 minutes
+        path: '/'
+    });
 
-        cookieStore.set('session_userid', userId, cookieOptions);
-        cookieStore.set('session_access_token', accessToken, cookieOptions);
-        cookieStore.set('session_refresh_token', refreshToken, cookieOptions);
-    } catch (error) {
-        console.error('Error setting cookies:', error);
+    cookieStore.set('session_refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60 * 24 * 7, // One week
+        path: '/'
+    });
+}
+
+export async function handleRefresh() {
+    console.log('handleRefresh');
+
+    const refreshToken = await getRefreshToken();
+
+    // If no refresh token, don't try to refresh
+    if (!refreshToken) {
+        console.log('No refresh token available, cannot refresh');
+        await resetAuthCookies();
+        return null;
     }
+
+    const token = await fetch('http://localhost:8000/api/auth/token/refresh/', {
+        method: 'POST',
+        body: JSON.stringify({
+            refresh: refreshToken
+        }),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(async (json) => {
+            console.log('Response - Refresh:', json);
+
+            if (json.access) {
+                await handleJwtRefresh(json.access, json.refresh || refreshToken);
+                return json.access;
+            } else {
+                console.log('Refresh failed:', json);
+                await resetAuthCookies();
+                return null;
+            }
+        })
+        .catch(async (error) => {
+            console.log('error', error);
+
+            await resetAuthCookies();
+            return null;
+        })
+
+    return token;
+}
+
+export async function handleLogin(userId: string, accessToken: string, refreshToken: string) {
+    const cookieStore = await cookies();
+    
+    cookieStore.set('session_userid', userId, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60 * 24 * 7, // One week
+        path: '/'
+    });
+
+    cookieStore.set('session_access_token', accessToken, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60, // 60 minutes
+        path: '/'
+    });
+
+    cookieStore.set('session_refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60 * 24 * 7, // One week
+        path: '/'
+    });
 }
 
 export async function resetAuthCookies() {
     const cookieStore = await cookies();
-    // Delete cookies by setting maxAge to 0
-    cookieStore.set('session_userid', '', { maxAge: 0, path: '/' });
-    cookieStore.set('session_access_token', '', { maxAge: 0, path: '/' });
-    cookieStore.set('session_refresh_token', '', { maxAge: 0, path: '/' });
+    cookieStore.set('session_userid', '', { path: '/' });
+    cookieStore.set('session_access_token', '', { path: '/' });
+    cookieStore.set('session_refresh_token', '', { path: '/' });
 }
 
+//
+// Get data
+
 export async function getUserId() {
-    if (typeof window === 'undefined') {
-        // Server-side
-        const cookieStore = await cookies();
-        return cookieStore.get('session_userid')?.value || null;
-    } else {
-        // Client-side
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; session_userid=`);
-        if (parts.length === 2) {
-            const part = parts.pop();
-            if (part) {
-                return part.split(';').shift() || null;
-            }
-        }
-        return null;
-    }
+    const cookieStore = await cookies();
+    const userId = cookieStore.get('session_userid')?.value
+    return userId ? userId : null
 }
 
 export async function getAccessToken() {
-    let accessToken = (await cookies()).get('session_access_token')?.value;
+    const cookieStore = await cookies();
+    let accessToken = cookieStore.get('session_access_token')?.value;
+
+    if (!accessToken) {
+        accessToken = await handleRefresh();
+    }
 
     return accessToken;
 }
 
 export async function getRefreshToken() {
-    let refreshToken = (await cookies()).get('session_refresh_token')?.value;
+    const cookieStore = await cookies();
+    let refreshToken = cookieStore.get('session_refresh_token')?.value;
 
     return refreshToken;
-}
-
-export async function handleJwtRefresh(accessToken: string, refreshToken: string) {
-    const cookieStore = await cookies();
-    const cookieOptions = {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/',
-        sameSite: 'lax' as const
-    };
-
-    cookieStore.set('session_access_token', accessToken, cookieOptions);
-    cookieStore.set('session_refresh_token', refreshToken, cookieOptions);
 }

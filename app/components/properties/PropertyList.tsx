@@ -118,7 +118,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
 
     useEffect(() => {
         getProperties();
-    }, [category, searchModal.query, params]);
+    }, [category, country, numGuests, numBedrooms, numBathrooms, checkinDate, checkoutDate, landlord_id, favorites]);
 
     return (
         <>
