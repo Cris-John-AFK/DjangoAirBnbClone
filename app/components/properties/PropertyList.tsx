@@ -48,9 +48,12 @@ const PropertyList: React.FC<PropertyListProps> = ({
         } else if (favorites) {
             url += '?favorites=true'
         }
-        const tmpProperties = await apiService.get(url);
-
-        setProperties(tmpProperties.data);
+        try {
+            const tmpProperties = await apiService.get(url);
+            setProperties(tmpProperties.data);
+        } catch (error) {
+            console.error('Error fetching properties:', error);
+        }
     }
     useEffect(() => {
         getProperties();

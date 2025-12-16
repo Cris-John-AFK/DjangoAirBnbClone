@@ -12,7 +12,7 @@ export async function handleLogin(userId: string, accessToken: string, refreshTo
             path: '/',
             sameSite: 'lax' as const
         };
-        
+
         cookieStore.set('session_userid', userId, cookieOptions);
         cookieStore.set('session_access_token', accessToken, cookieOptions);
         cookieStore.set('session_refresh_token', refreshToken, cookieOptions);
@@ -52,4 +52,24 @@ export async function getAccessToken() {
     let accessToken = (await cookies()).get('session_access_token')?.value;
 
     return accessToken;
+}
+
+export async function getRefreshToken() {
+    let refreshToken = (await cookies()).get('session_refresh_token')?.value;
+
+    return refreshToken;
+}
+
+export async function handleJwtRefresh(accessToken: string, refreshToken: string) {
+    const cookieStore = await cookies();
+    const cookieOptions = {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/',
+        sameSite: 'lax' as const
+    };
+
+    cookieStore.set('session_access_token', accessToken, cookieOptions);
+    cookieStore.set('session_refresh_token', refreshToken, cookieOptions);
 }

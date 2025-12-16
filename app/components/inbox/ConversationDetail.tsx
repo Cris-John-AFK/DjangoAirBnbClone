@@ -26,7 +26,13 @@ const ConversationDetail: React.FC<ConversationDetailProps> = ({
     const otherUser = conversation.users?.find((user) => user.id != userId)
     const [realtimeMessages, setRealtimeMessages] = useState<MessageType[]>([]);
 
-    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`, {
+    const wsHost = process.env.NEXT_PUBLIC_WS_HOST || 'ws://127.0.0.1:8000';
+    const wsUrl = `${wsHost}/ws/${conversation.id}/?token=${token}`;
+
+    console.log('WS Host:', wsHost);
+    console.log('WS URL:', wsUrl);
+
+    const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(wsUrl, {
         share: false,
         shouldReconnect: () => true,
     },
