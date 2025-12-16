@@ -33,8 +33,8 @@ const AddPropertyModal = () => {
 
     //
     //
-    const setCategory = (category: {category: string}) => {
-        setDataCategory(category.category)
+    const setCategory = (category: string) => {
+        setDataCategory(category)
     }
 
     const setImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +74,7 @@ const AddPropertyModal = () => {
             if (response.success) {
                 console.log('Success');
                 
-                router.push('/');
+                router.push('/'); 
 
                 addPropertyModal.close();
             } else {

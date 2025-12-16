@@ -2,7 +2,7 @@
 
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation'; 
 import PropertyListItem from "./PropertyListItem";
 import apiService from '@/app/services/apiService';
 import useSearchModal from '@/app/hooks/useSearchModal';
